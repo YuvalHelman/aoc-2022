@@ -1,4 +1,5 @@
-from typing import IO
+from io import TextIOWrapper
+from typing import IO, Generator
 from pathlib import Path
 import contextlib
 import sys
@@ -19,10 +20,10 @@ def get_cur_package_path() -> Path:
 
 
 @contextlib.contextmanager
-def open_puzzle_input(day: int, year: int = 2020) -> Path:
+def open_puzzle_input(day: int, year: int = 2020) -> Generator[TextIOWrapper, None, None]:
     puz_in_path = get_cur_package_path() / f"inputs/day{str(day)}.txt"
     if not puz_in_path.exists():
-        config_path = Path(get_cur_package_path()) / 'aoc_request.json'
+        config_path = Path(get_cur_package_path()).parent / 'aoc_requests.json'
         with open(config_path) as fp:
             config = json.load(fp)
         url = f'https://adventofcode.com/{year}/day/{str(day)}/input'
@@ -37,5 +38,6 @@ def open_puzzle_input(day: int, year: int = 2020) -> Path:
     file_handle.close()
 
 
-with open_puzzle_input(10) as f:
-    print(list(f.readlines())[0])
+if __name__ == '__main__':
+    with open_puzzle_input(10) as f:
+        print(list(f.readlines())[0])
